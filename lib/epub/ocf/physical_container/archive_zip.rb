@@ -29,7 +29,7 @@ module EPUB
             @archive.each.with_index do |entry, index|
               if target_index
                 if target_index == index
-                  return entry.file_data.read
+                  return read_content(entry)
                 else
                   next
                 end
@@ -40,7 +40,7 @@ module EPUB
               @entries[entry_path] = index
               @last_iterated_entry_index = index
               if entry_path == path_name
-                return entry.file_data.read
+                return read_content(entry)
               end
             end
 
@@ -48,6 +48,20 @@ module EPUB
           else
             open {|container| container.read(path_name)}
           end
+        end
+
+        private
+
+        def read_content(entry)
+          file_data = entry.file_data
+          content = ""
+          begin
+            loop do
+              content << file_data.read(8192)
+            end
+          rescue EOFError
+          end
+          content
         end
       end
     end
