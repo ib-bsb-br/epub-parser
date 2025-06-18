@@ -176,15 +176,13 @@ If you find other gems, please tell me or request a pull request.
 
 == RECENT CHANGES
 
-=== 0.5.0
-
-* Follow Ruby 3.5 inspection change
-
 === 0.4.9
 
 * Restructure test
 * Restructure Rake tasks
 * Update required Ruby version to 2.6
+* Follow Ruby 3.5 inspection change
+* Follow Archive::Zip API change
 
 === 0.4.8
 
@@ -193,12 +191,6 @@ If you find other gems, please tell me or request a pull request.
 === 0.4.7
 
 * [BUG FIX]Fix a bug that epubinfo doesn't handle navigation properly
-
-=== 0.4.6
-
-* [BUG FIX]Prevent epubinfo tool raise exception when no nav elements
-* Tiny modifcation on Zip archive manipulation
-* Remove version specification from Nokogiri to migrate to Ruby 3.1
 
 See {file:CHANGELOG.adoc} for older changelogs and details.
 

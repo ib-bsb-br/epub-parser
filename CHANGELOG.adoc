@@ -1,14 +1,12 @@
 = CHANGELOG
 
-== 0.5.0
-
-* Follow Ruby 3.5 inspection change
-
 == 0.4.9
 
 * Restructure test
 * Restructure Rake tasks
 * Update required Ruby version to 2.6
+* Follow Ruby 3.5 inspection change
+* Follow Archive::Zip API change
 
 == 0.4.8
 
