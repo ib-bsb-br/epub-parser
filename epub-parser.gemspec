@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'packnga'
   s.add_development_dependency "steep"
 
-  s.add_runtime_dependency 'archive-zip'
+  s.add_runtime_dependency 'archive-zip', ">= 0.13.0"
   s.add_runtime_dependency 'rexml'
   s.add_runtime_dependency 'addressable', '>= 2.3.5'
   s.add_runtime_dependency 'rchardet', '>= 1.6.1'
