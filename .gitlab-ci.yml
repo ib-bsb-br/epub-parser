@@ -27,9 +27,9 @@ pages:
   stage: deploy
   image: ruby:3.4
   dependencies:
-    - test:3.4
+    - test
   script:
-    - bundle exec rake test doc:yard
+    - bundle exec rake doc:yard
     - mv doc public
     - mv coverage public/
   artifacts:
