@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubygems-tasks'
   s.add_development_dependency 'zipruby'
   s.add_development_dependency 'rubyzip', '>= 2.0.0'
+  s.add_development_dependency "ruzip"
   s.add_development_dependency 'test-unit'
   s.add_development_dependency 'test-unit-rr'
   s.add_development_dependency 'test-unit-notify'
