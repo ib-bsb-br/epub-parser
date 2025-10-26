@@ -5,6 +5,7 @@ before_script:
   - ruby -v
   - which ruby
   - bundle config --local build.zipruby "--with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types' --with-zlib-include=/usr/include"
+  - dpkg -L zlib1g-dev
   - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}"
   - bundle clean
 
