@@ -4,7 +4,7 @@ before_script:
   - . "$HOME/.cargo/env"
   - ruby -v
   - which ruby
-  - bundle config --local build.zipruby "--with-zlib-include=/usr/include --with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types'"
+  - bundle config --local build.zipruby "--with-zlib-include=/usr/include --with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-pointer-types'"
   - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}" || (cat deps/ruby/3.4.0/extensions/x86_64-linux/3.4.0/zipruby-*/mkmf.log && exit 1)
   - bundle clean
 
