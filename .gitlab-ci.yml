@@ -1,10 +1,10 @@
 before_script:
-  - apt-get update -y
+  - apt-get update -y && apt-get install -y clang
   - curl https://sh.rustup.rs -sSf | sh -s -- -y
   - . "$HOME/.cargo/env"
   - ruby -v
   - which ruby
-  - bundle config --local build.zipruby "--with-zlib-include=/usr/include --with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types'"
+  - bundle config --local build.zipruby "--with-zlib-include=/usr/include --with-opt-include=/usr/include --with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types'"
   - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}"
   - bundle clean
 
