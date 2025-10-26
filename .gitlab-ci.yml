@@ -1,68 +1,27 @@
 before_script:
+  - apt-get update && apt-get install -y clang
+  - curl https://sh.rustup.rs -sSf | sh -s -- -y
+  - . "$HOME/.cargo/env"
   - ruby -v
   - which ruby
   - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}"
   - bundle clean
 
-test:2.7:
-  image: ruby:2.7
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
+test:
+  image: ruby: $RUBY_VERSION
+  script:
+    - bundle exec rake test XML_BACKEND=REXML 2>/dev/null
+    - bundle exec rake test XML_BACKEND=Oga 2>/dev/null
+    - bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
   except:
     - tags
   cache:
-    key: ruby:2.7
+    key: ruby:$RUBY_VERSION
     paths:
       - deps
-
-test:3.0:
-  image: ruby:3.0
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
-  except:
-    - tags
-  cache:
-    key: ruby:3.0
-    paths:
-      - deps
-
-test:3.1:
-  image: ruby:3.1
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
-  except:
-    - tags
-  cache:
-    key: ruby:3.1
-    paths:
-      - deps
-
-test:3.2:
-  image: ruby:3.2
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
-  except:
-    - tags
-  cache:
-    key: ruby:3.2
-    paths:
-      - deps
-
-test:3.3:
-  image: ruby:3.3
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
-  except:
-    - tags
-  cache:
-    key: ruby:3.3
-    paths:
-      - deps
-
-test:3.4:
-  image: ruby:3.4
-  script: bundle exec rake test XML_BACKEND=REXML 2>/dev/null && bundle exec rake test XML_BACKEND=Oga 2>/dev/null && bundle exec rake test XML_BACKEND=Nokogiri 2>/dev/null
-  except:
-    - tags
-  cache:
-    key: ruby:3.4
-    paths:
-      - deps
+  parallel:
+    matrix:
+      - RUBY_VERSION: [2.7, 3.0, 3.1, 3.2, 3.3, 3.4]
 
 pages:
   stage: deploy
