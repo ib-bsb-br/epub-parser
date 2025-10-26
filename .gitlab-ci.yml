@@ -5,7 +5,7 @@ before_script:
   - ruby -v
   - which ruby
   - bundle config --local build.zipruby "--with-zlib-include=/usr/include --with-opt-include=/usr/include --with-cflags='-Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=incompatible-function-pointer-types'"
-  - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}"
+  - bundle install --jobs=$(nproc) --path=deps "${FLAGS[@]}" || (cat deps/ruby/3.4.0/extensions/x86_64-linux/3.4.0/zipruby-*/mkmf.log && exit 1)
   - bundle clean
 
 test:
