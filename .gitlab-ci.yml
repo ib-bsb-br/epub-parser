@@ -8,7 +8,7 @@ before_script:
   - bundle clean
 
 test:
-  image: ruby: $RUBY_VERSION
+  image: ruby:$RUBY_VERSION
   script:
     - bundle exec rake test XML_BACKEND=REXML 2>/dev/null
     - bundle exec rake test XML_BACKEND=Oga 2>/dev/null
