@@ -1,5 +1,6 @@
 # coding: utf-8
 require_relative "test_ocf_physical_container_base"
+require "epub/ocf/physical_container/ruzip"
 
 class TestOCFPhysicalContainer < TestOCFPhysicalContainerBase
   def test_read
@@ -30,6 +31,16 @@ class TestOCFPhysicalContainer < TestOCFPhysicalContainerBase
     def setup
       super
       @class = EPUB::OCF::PhysicalContainer::ArchiveZip
+      @container = @class.new(@container_path)
+    end
+  end
+
+  class TestRuZip < self
+    include ConcreteContainer
+
+    def setup
+      super
+      @class = EPUB::OCF::PhysicalContainer::RuZip
       @container = @class.new(@container_path)
     end
   end
