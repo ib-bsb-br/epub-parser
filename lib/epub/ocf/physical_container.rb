@@ -21,8 +21,8 @@ module EPUB
       class << self
         def find_adapter(adapter)
           return adapter if adapter.instance_of? Class
-          if adapter == :Zipruby && ! const_defined?(adapter)
-            require 'epub/ocf/physical_container/zipruby'
+          if (adapter == :Zipruby || adapter == :RuZip) && ! const_defined?(adapter)
+            require "epub/ocf/physical_container/#{adapter.downcase}"
           end
           const_get adapter
         end
