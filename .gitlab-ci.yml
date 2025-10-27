@@ -30,7 +30,7 @@ pages:
   dependencies:
     - test
   script:
-    - bundle exec rake doc:yard
+    - bundle exec rake test:test doc:yard
     - mv doc public
     - mv coverage public/
   artifacts:
