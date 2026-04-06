@@ -671,10 +671,20 @@ module EpubStructuredText
             )
             nil
           else
-            apply_hidden_css_rules!(item, doc, body)
-            clean_noise!(item, body)
-            build_position_cache(item, body)
-            body
+            body_hidden = apply_hidden_css_rules!(item, doc, body)
+            if body_hidden
+              record_loss(
+                "body_hidden_by_css",
+                "Skipped XHTML body because a stylesheet selector hides the body element itself.",
+                context: item_context(item),
+                payload: safe_markup(body)
+              )
+              nil
+            else
+              clean_noise!(item, body)
+              build_position_cache(item, body)
+              body
+            end
           end
         end
       end
@@ -719,11 +729,18 @@ module EpubStructuredText
     end
 
     def apply_hidden_css_rules!(item, doc, body)
+      body_hidden = false
+
       hidden_selectors_for(doc).each do |selector|
         begin
           doc.css(selector).each do |node|
             next unless node.element?
             next unless node == body || node.ancestors.include?(body)
+
+            if node == body
+              body_hidden = true
+              next
+            end
 
             record_loss(
               "hidden_css_removed_node",
@@ -744,8 +761,17 @@ module EpubStructuredText
             context: item_context(item).merge(selector: selector, error_class: e.class.name),
             payload: e.message
           )
+        rescue StandardError => e
+          record_loss(
+            "hidden_css_selector_error",
+            "Unexpected error while evaluating a CSS selector extracted from inline styles.",
+            context: item_context(item).merge(selector: selector, error_class: e.class.name),
+            payload: e.message
+          )
         end
       end
+
+      body_hidden
     end
 
     def hidden_selectors_for(doc)
@@ -963,7 +989,7 @@ module EpubStructuredText
     end
 
     def normalize_heading_levels!(events)
-      levels = events.select { |event| event.type == :heading }.map(&:level).compact
+      levels = events.select { |e| e.type == :heading }.map(&:level).compact
       return if levels.empty?
 
       base = levels.min
@@ -1268,7 +1294,7 @@ module EpubStructuredText
         break if stop_node?(child)
         next unless child.name.downcase == "li"
 
-        intro = inline_text_without_nested_lists(child)
+        intro = list_item_intro(child)
         out << Event.new(type: :list_item, depth: list_depth, text: intro) unless intro.empty?
 
         child.xpath("./*[local-name()='ul' or local-name()='ol']").each do |nested|
@@ -1284,15 +1310,33 @@ module EpubStructuredText
           next if %w[ul ol].include?(sub.name.downcase)
           next unless sub.name.downcase.match?(/\Ah[1-6]\z/) || BLOCK_TAGS.include?(sub.name.downcase)
 
-          walk_children(sub, out, list_depth: list_depth)
+          walk_single(sub, out, list_depth: list_depth)
         end
       end
     end
 
-    def inline_text_without_nested_lists(node)
-      copy = node.dup(1)
-      copy.xpath("./*[local-name()='ul' or local-name()='ol']").remove
-      inline_text(copy)
+    def list_item_intro(node)
+      pieces = []
+
+      node.children.each do |child|
+        break if stop_node?(child)
+        next if subtree_before_range?(child)
+
+        if child.text?
+          pieces << child.text
+          next
+        end
+
+        next unless child.element?
+
+        tag = child.name.downcase
+        next if %w[ul ol].include?(tag)
+        next if tag.match?(/\Ah[1-6]\z/) || BLOCK_TAGS.include?(tag)
+
+        gather_inline(child, pieces)
+      end
+
+      normalize_inline(pieces.join)
     end
 
     def inline_text(node)
